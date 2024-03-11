@@ -37,39 +37,30 @@
             <version>${jqwik.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>net.jqwik</groupId>
-            <artifactId>jqwik-kotlin</artifactId>
-            <version>${jqwik.version}</version>
-            <scope>test</scope>
-        </dependency>
+        <!-- uncomment to show failure -->
+<!--        <dependency>-->
+<!--            <groupId>net.jqwik</groupId>-->
+<!--            <artifactId>jqwik-kotlin</artifactId>-->
+<!--            <version>${jqwik.version}</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>
         <plugins>
-            <!-- https://kotlinlang.org/docs/maven.html#compile-kotlin-and-java-sources -->
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <version>${kotlin.version}</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <args>
-                        <arg>-java-parameters</arg> <!-- Get correct parameter names in jqwik reporting -->
-                        <arg>-Xjsr305=strict</arg> <!-- Strict interpretation of nullability annotations in jqwik API -->
-                        <arg>-Xemit-jvm-type-annotations</arg> <!-- Enable annotations on type variables -->
-                    </args>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.jetbrains.kotlin</groupId>
-                        <artifactId>kotlin-maven-lombok</artifactId>
-                        <version>${kotlin.version}</version>
-                    </dependency>
-                </dependencies>
+                <extensions>true</extensions> <!-- You can set this option
+            to automatically take information about lifecycles -->
                 <executions>
                     <execution>
                         <id>compile</id>
+                        <goals>
+                            <goal>compile</goal> <!-- You can skip the <goals> element
+                        if you enable extensions for the plugin -->
+                        </goals>
                         <configuration>
                             <sourceDirs>
                                 <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
@@ -79,6 +70,10 @@
                     </execution>
                     <execution>
                         <id>test-compile</id>
+                        <goals>
+                            <goal>test-compile</goal> <!-- You can skip the <goals> element
+                    if you enable extensions for the plugin -->
+                        </goals>
                         <configuration>
                             <sourceDirs>
                                 <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
@@ -92,17 +87,13 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.5.1</version>
-                <configuration>
-                    <compilerArgs>
-                        <arg>-parameters
-                        </arg> <!-- required if you want to report source code names of property method parameters -->
-                    </compilerArgs>
-                </configuration>
                 <executions>
+                    <!-- Replacing default-compile as it is treated specially by Maven -->
                     <execution>
                         <id>default-compile</id>
                         <phase>none</phase>
                     </execution>
+                    <!-- Replacing default-testCompile as it is treated specially by Maven -->
                     <execution>
                         <id>default-testCompile</id>
                         <phase>none</phase>
@@ -122,18 +113,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven-surefire-plugin.version}</version>
-                <configuration>
-                    <excludes>
-                        <exclude>**/*IntegrationTest.java</exclude>
-                        <exclude>**/*ITest.java</exclude>
-                    </excludes>
-                    <forkCount>1</forkCount>
-                </configuration>
             </plugin>
         </plugins>
     </build>
